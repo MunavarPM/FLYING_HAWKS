@@ -87,7 +87,9 @@ struct LoginPage : View {
                         .alert(errorMessage, isPresented: $shwoError, actions: {})
                         .alert(isPresented: $isAlert) {
                             Alert(title: Text("Error"),
-                                  message: Text("Invalid email or password."), primaryButton: .default(Text("Try Again")), secondaryButton: .destructive(Text("Delect"),action: clearTextFields))
+                                  message: Text("Invalid email or password."), primaryButton: .cancel(Text("Try again"),action: {
+                                isLoading = false
+                            }), secondaryButton: .destructive(Text("Delete"),action: clearTextFields))
                         }
                         .opacity(email != "" && Password != "" ? 1 : 0.5)
                         .disabled(email != "" && Password != "" ? false : true)
@@ -132,6 +134,7 @@ struct LoginPage : View {
             if error != nil {
                 self.isAlert = true
                 print(error?.localizedDescription ?? "")
+                isLoading = false
             } else {
                 Task {
                     try await viewModel.signIn(withEmail: email, password: Password)
@@ -164,6 +167,7 @@ struct LoginPage : View {
     func clearTextFields() {
         email = ""
         Password = ""
+        isLoading = false
     }
 }
 

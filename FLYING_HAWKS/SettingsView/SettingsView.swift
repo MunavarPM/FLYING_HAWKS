@@ -24,7 +24,8 @@ struct SettingsView: View {
                 .ignoresSafeArea(.all)
             List {
                 HStack(spacing: 20) {
-                    Text(User.Mark_User.initials)
+                    //                    Text(User.Mark_User.initials)
+                    Text(viewModel.CurrentUser?.fullname ?? User.Mark_User.fullname)
                         .shimmering()
                         .font(.title)
                         .fontWeight(.semibold)
@@ -34,7 +35,7 @@ struct SettingsView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading) {
-                        Text(User.Mark_User.fullname)
+                        Text(viewModel.CurrentUser?.fullname ?? User.Mark_User.fullname)
                             .font(.title3).bold()
                         Text(viewModel.CurrentUser?.email ?? User.Mark_User.email)
                             .clipShape(Rectangle())
@@ -70,47 +71,47 @@ struct SettingsView: View {
                     }) {
                         Text("Delect Account")
                             .foregroundColor(.red)
+                            .alert(isPresented: $showAlertDelectAccount) {
+                                Alert(
+                                    title: Text("Are you sure you want to Delect Accoun ⚠️ ?"),
+                                    primaryButton: .destructive(
+                                        Text("DELECT"),
+                                        action: {
+                                            Task {
+                                                do {
+                                                    let _ = performDelectAccount()
+                                                } catch {
+                                                    await setError(error)
+                                                }
+                                            }
+                                        }
+                                    ),
+                                    secondaryButton: .cancel()
+                                )
+                            }
                     }
                     
                     Button {
-//                        isLoading = true
-                        performLogout()
+                        showAlertSignout = true
+                        //                        performLogout()
                     } label: {
                         Text("Logout")
                             .foregroundColor(.red)
+                            .alert(isPresented: $showAlertSignout) {
+                                Alert(
+                                    title: Text("Are you sure you want to logout?"),
+                                    primaryButton: .destructive(
+                                        Text("Logout"),
+                                        action: {
+                                            performLogout()
+                                        }
+                                    ),
+                                    secondaryButton: .cancel()
+                                )
+                            }
                     }
                 }
                 
-//                .alert(isPresented: $showAlertSignout) {
-//                    Alert(
-//                        title: Text("Are you sure you want to logout?"),
-//                        primaryButton: .destructive(
-//                            Text("Logout"),
-//                            action: {
-//                                performLogout()
-//                            }
-//                        ),
-//                        secondaryButton: .cancel()
-//                    )
-//                }
-                .alert(isPresented: $showAlertDelectAccount) {
-                    Alert(
-                        title: Text("Are you sure you want to Delect Accoun ⚠️ ?"),
-                        primaryButton: .destructive(
-                            Text("DELECT"),
-                            action: {
-                                Task {
-                                    do {
-                                        let _ = performDelectAccount()
-                                    } catch {
-                                        await setError(error)
-                                    }
-                                }
-                            }
-                        ),
-                        secondaryButton: .cancel()
-                    )
-                }
             }
         }
         .task {
@@ -124,7 +125,7 @@ struct SettingsView: View {
     
     func performLogout() {
         viewModel.signOut()
-//        isLoading = false
+        //        isLoading = false
         isLoggedIn = false
     }
     
@@ -153,7 +154,7 @@ struct SettingsView: View {
             errorMessage = error.localizedDescription
             shwoError.toggle()
         })
-
+        
     }
 }
 

@@ -1,11 +1,12 @@
 
 
 
-import Foundation
+import SwiftUI
 import FirebaseAuth
 import Firebase
 import FirebaseFirestoreSwift
 import FirebaseFirestore
+
 
 
 
@@ -17,7 +18,11 @@ class AuthenticationModel: ObservableObject { ///checker
     @Published var UserSession: FirebaseAuth.User? /// user is here or not checker with firebase object
     @Published var CurrentUser: User?
     
-    init() {
+    @AppStorage("user_profile_url") private var profileURL: URL?
+    @AppStorage("user_name") private var userName: String = ""
+    @AppStorage("user_UID")private var userUID: String = ""
+    
+    init(){
         self.UserSession = Auth.auth().currentUser
         
         Task {
@@ -39,10 +44,16 @@ class AuthenticationModel: ObservableObject { ///checker
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password) /// Was user using firebase that we installed and connecting those
             self.UserSession = result.user /// we it was succues we set it as an UserSession
-            let user = User(id: result.user.uid, fullname: fullname, email: email)  /// Thus details from the firebase and create our object
+            let _userId = result.user.uid
+            let _profileUrl = URL(string: "\(fullname+_userId)")
+            let user = User(id: _userId, fullname: fullname, email: email, profileURL: _profileUrl!)  /// Thus details from the firebase and create our object
             let encodedUser = try Firestore.Encoder().encode(user) ///
-            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser) 
-            //            await fetchUser()
+            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+            
+            self.userName = fullname
+            self.userUID = _userId
+            self.profileURL = _profileUrl
+
         } catch {
             print("Debug failed in creating the user \(error.localizedDescription)")
         }
@@ -64,6 +75,12 @@ class AuthenticationModel: ObservableObject { ///checker
         guard let user = try? await Firestore.firestore().collection("users").document(userUID).getDocument(as: User.self) else { return }
         await MainActor.run(body: {
             CurrentUser = user
+            
+            
+            //MARK: here i used it to give initial value to userName,userUID,profileURL from user fullname , id , profileurl
+            self.userName = user.fullname
+            self.userUID = user.id
+            self.profileURL = user.profileURL
         })
     }
 }

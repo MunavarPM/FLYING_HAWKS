@@ -25,6 +25,8 @@ struct signupView_Previews: PreviewProvider {
 
 struct Viewsignup : View {
     
+   
+    
     @State var fullname = ""
     @State var email = ""
     @State var password = ""
@@ -57,19 +59,20 @@ struct Viewsignup : View {
                     Spacer(minLength: 0)
                 }
                 /// Enter Field.
-                HStack {
+                HStack{
                     Image(systemName: "person.circle")
                         .font(.title2)
                         .foregroundColor(Color.white.opacity(0.5))
                     TextField("name", text: $fullname)
                         .autocapitalization(.none)
+                        .autocorrectionDisabled()
                     
                 }
                 .padding()
                 .background(Color.white.opacity(fullname == "" ? 0 : 0.12))
                 .cornerRadius(15)
                 .padding(.horizontal)
-                HStack {
+                HStack{
                     Image(systemName: "envelope.fill")
                         .font(.title2)
                         .foregroundColor(Color.white.opacity(0.5))
@@ -133,7 +136,9 @@ struct Viewsignup : View {
                 /// Button Field.
                 HStack {
                     Button {
-                       register()
+                        if password == conformPassword{
+                            register()
+                        }
                     } label: {
                         Text("Register")
                             .fontWeight(.heavy)
@@ -183,6 +188,11 @@ struct Viewsignup : View {
             }
         }
     }
+    
+    func uploadUserDataToFirebase(){
+        
+    }
+    
     func setError(_ error: Error) async {
         await MainActor.run(body: {
             errorMessage = error.localizedDescription

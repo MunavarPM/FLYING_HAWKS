@@ -45,39 +45,11 @@ struct ExploreViewModel: View {
                 }
                 .frame(height: 200)
             }
-            PostInteraction()
-//                .onTapGesture {
-//                    isReacted.toggle()
-//                }
             HStack {
-                Button {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        isReacted.toggle()
-                        ReactCount += isReacted ? -1 : 1
-                    }
-                } label: {
-                    if isReacted {
-                        Image(systemName: "hands.clap")
-                            .fontWeight(.semibold)
-                            .accentColor(.black)
-                    } else {
-                        Image(systemName: "hands.clap.fill")
-                            .fontWeight(.semibold)
-                            .foregroundColor(.yellow)
-                    }
-                }
-                .buttonStyle(ScaleButtonStyle())
-
-                
-                HStack {
-                    Text(" \(ReactCount) ").fontWeight(.semibold).font(.callout) +
-                    Text("React's").font(.footnote)
-                }
-                Spacer()
+                PostInteraction()
             }
-            
-            .padding(.leading,30)
-            .padding(.top)
+            .vAlign(.leading)
+
             HStack {
                 Text(post.userName).fontWeight(.semibold) +
                 Text(post.text)
@@ -134,7 +106,7 @@ struct ExploreViewModel: View {
             Button {
                 dislikePost()
             } label: {
-                Image(systemName: post.dislikedIDs.contains(userUID) ? "hands.thumbsdown.fill" : "hands.thumbsdown")
+                Image(systemName: post.dislikedIDs.contains(userUID) ?"hands.clap.fill" : "hands.clap")
             }
             .padding(.leading, 25)
             
@@ -142,7 +114,7 @@ struct ExploreViewModel: View {
                 .font(.caption)
                 .foregroundColor(.gray)
         }
-        .foregroundColor(.black)
+        .foregroundColor(.white)
         .padding(.vertical, 8)
     }
     
@@ -177,8 +149,6 @@ struct ExploreViewModel: View {
             }
         }
     }
-
-    
 }
 
 //struct ExploreViewModel_Previews: PreviewProvider {

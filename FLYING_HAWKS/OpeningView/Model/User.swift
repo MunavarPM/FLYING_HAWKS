@@ -12,6 +12,8 @@ struct User: Identifiable, Codable {
     let id: String
     let fullname: String
     let email: String
+    let profileURL:URL
+    
     
     var initials: String {  /// for initial like munavar ( MU )
         let formatter = PersonNameComponentsFormatter()
@@ -22,6 +24,8 @@ struct User: Identifiable, Codable {
         return ""
     }
 }
+
 extension User {
-    static var Mark_User = User(id: NSUUID().uuidString, fullname: "Munavar BinShareef", email: "munavar@gmail.com")
+   
+    static var Mark_User = User(id:"\(String(describing: UUID(uuidString: "uknown")))", fullname: "UNKONWN", email: "UNKNOWN", profileURL:URL(string: "invalid")!)
 }
