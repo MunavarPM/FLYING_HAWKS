@@ -19,6 +19,7 @@ struct ExploreViewModel: View {
     @State var ReactCount: Int = 12
     @State private var docListner: ListenerRegistration? /// For live updation
     @AppStorage("user_UID") var userUID: String = ""
+    
     var body: some View {
         VStack {
             HStack {
@@ -32,6 +33,8 @@ struct ExploreViewModel: View {
                     .fontWeight(.semibold)
                 Spacer()
             }
+            
+
             .padding(.leading,30)
             
             if let postImageURL = post.imageURL {
@@ -47,9 +50,10 @@ struct ExploreViewModel: View {
             }
             HStack {
                 PostInteraction()
+                    .padding()
+                    .hAlign(.leading)
             }
-            .vAlign(.leading)
-
+            
             HStack {
                 Text(post.userName).fontWeight(.semibold) +
                 Text(post.text)
@@ -67,17 +71,34 @@ struct ExploreViewModel: View {
                 .padding(.top, 1)
                 .foregroundColor(.gray)
         }
+        .overlay(alignment: .topTrailing, content: {
+            if post.imageReferenceID == self.post.imageReferenceID {
+                Menu {
+                    Button("Delete Post", role: .destructive, action: DeletePost)
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.caption)
+                        .rotationEffect(.init(degrees: -90))
+                        .foregroundColor(.white)
+                        .padding(10)
+                        .contentShape(Rectangle())
+                }
+                .offset(x: 8)
+            }
+        })
         .onAppear {
             /// When the post presented on the screen than it was start live updataion
             if docListner == nil {
                 guard let postID = post.id else { return }
                 docListner = Firestore.firestore().collection("Posts").document(postID).addSnapshotListener({ snapshot, error in
                     if let snapshot {
-                        if let updatedPost = try? snapshot.data(as: Post.self) {
-                            onUpdate(updatedPost)
+                        if snapshot.exists {
+                            if let updatedPost = try? snapshot.data(as: Post.self) {
+                                onUpdate(updatedPost)
+                            }
+                        } else {
+                            onDelete()
                         }
-                    } else {
-                        onDelete()
                     }
                 })
                 
@@ -89,14 +110,15 @@ struct ExploreViewModel: View {
     func PostInteraction()-> some View {
         HStack(spacing: 6) {
             Button {
-                reatedPost()
+                reactedPost()
             } label: {
                 withAnimation(.easeInOut(duration: 0.3)) {
-                    Image(systemName: post.reactedIDs.contains(userUID) ? "hands.clap.fill" : "hands.clap")
-
+                    Image(systemName: post.reactedIDs.contains(userUID) ? "hands.sparkles.fill" : "hands.sparkles")
                 }
             }
+            .foregroundColor(.white)
             .buttonStyle(ScaleButtonStyle())
+            
             
             
             Text("\(post.reactedIDs.count)")
@@ -106,19 +128,20 @@ struct ExploreViewModel: View {
             Button {
                 dislikePost()
             } label: {
-                Image(systemName: post.dislikedIDs.contains(userUID) ?"hands.clap.fill" : "hands.clap")
+                Image(systemName: post.dislikedIDs.contains(userUID) ?"hand.thumbsdown.fill" : "hand.thumbsdown")
             }
+            .foregroundColor(.white)
             .padding(.leading, 25)
             
             Text("\(post.dislikedIDs.count)")
                 .font(.caption)
                 .foregroundColor(.gray)
         }
-        .foregroundColor(.white)
+        
         .padding(.vertical, 8)
     }
     
-    func reatedPost() {
+    func reactedPost() {
         Task {
             guard let postID = post.id else { return }
             if post.reactedIDs.contains(userUID) {
@@ -146,6 +169,22 @@ struct ExploreViewModel: View {
                     "reactedIDs" : FieldValue.arrayRemove([userUID]),
                     "dislikedIDs" : FieldValue.arrayUnion([userUID])
                 ])
+            }
+        }
+    }
+    
+    func DeletePost() {
+        Task {
+            /// Delete image from firebase storage if it present
+            do {
+                if post.imageReferenceID != "" {
+                   try await Storage.storage().reference().child("Post_Images").child(post.imageReferenceID).delete()
+                }
+                /// Delete firestore Document
+                guard let postID = post.id else { return }
+                try await Firestore.firestore().collection("Posts").document(postID).delete()
+            } catch {
+                print(error.localizedDescription)
             }
         }
     }

@@ -147,33 +147,33 @@ struct CreateNewPost: View {
         
         print(userName+userUID)
         Task {
-           
+            
             do {
                 
                 profileURL = URL(string: "\(userUID)")
                 
                 guard let profileURL = profileURL else {
                     
-
+                    
                     print("before returning --- profile url")
                     return
-
+                    
                 }
                 
-               
+                
                 /// Upload the image
                 let imageReferenceID = "\(userUID)\(Date())"
                 let strorageRef = Storage.storage().reference().child("Post_Images").child(imageReferenceID)
                 
-            
+                
                 
                 if let postImageData {
                     let _ = try await strorageRef.putDataAsync(postImageData)
                     let downloadURL = try await strorageRef.downloadURL()
-
+                    
                     let post = Post(text: postText, imageURL: downloadURL,imageReferenceID: imageReferenceID, userName: userName, userID: userUID, userProfileURL: profileURL)
                     try await createDocumentAtFirebase(post)
-
+                    
                 } else {
                     /// here directly post text data to firebase since there is no image presents
                     let post = Post(text: postText, userName: userName, userID: userUID, userProfileURL: profileURL)

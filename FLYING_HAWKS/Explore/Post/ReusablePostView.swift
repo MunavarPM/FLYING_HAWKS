@@ -35,19 +35,19 @@ struct ReusablePostView: View {
                     
                 }
             }
+            .padding(15)
         }
-        
         .onAppear {
             Task {
+                guard posts.isEmpty else { return }
                 fetchPosts()
             }
         }
         .refreshable {
             isFetching = true
             posts = []
-           
+            fetchPosts()
         }
-
     }
     @ViewBuilder
     func post()-> some View {
@@ -64,7 +64,7 @@ struct ReusablePostView: View {
             } onDelete: {
                 /// Remove Post from Array
                 withAnimation(.easeInOut(duration: 0.25)) {
-                    posts.removeAll { post == $0 }
+                    posts.removeAll { post.id == $0.id }
                 }
             }
             Divider()
@@ -74,40 +74,40 @@ struct ReusablePostView: View {
     
     
     func fetchPosts() {
-            let db = Firestore.firestore()
-            let collectionReference = db.collection("Posts")
+        let db = Firestore.firestore()
+        let collectionReference = db.collection("Posts")
+        
+        collectionReference.getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Error fetching documents: \(error.localizedDescription)")
+                return
+            }
             
-            collectionReference.getDocuments { (snapshot, error) in
-                if let error = error {
-                    print("Error fetching documents: \(error.localizedDescription)")
-                    return
-                }
-                
-                guard let documents = snapshot?.documents else {
-                    print("No documents found.")
-                    return
-                }
-                
-                //declared a variable called posts to assign that to self.posts that is to the main global @Binding var posts: [Post] ; then we can assing posts to @Binding var posts: [Post] in the main thread.
-                var posts: [Post] = []
-                for document in documents {
-                    do {
-                        if let post = try document.data(as: Post?.self) {
-                            
-                            posts.append(post)
-                            print(posts)
-                        }
-                    } catch {
-                        print("Error decoding document: \(error.localizedDescription)")
+            guard let documents = snapshot?.documents else {
+                print("No documents found.")
+                return
+            }
+            
+            //declared a variable called posts to assign that to self.posts that is to the main global @Binding var posts: [Post] ; then we can assing posts to @Binding var posts: [Post] in the main thread.
+            var posts: [Post] = []
+            for document in documents {
+                do {
+                    if let post = try document.data(as: Post?.self) {
+                        
+                        posts.append(post)
+                        isFetching = false
                     }
-                }
-                
-                DispatchQueue.main.async {
-                    self.posts = posts
-                    isFetching = false
+                } catch {
+                    print("Error decoding document: \(error.localizedDescription)")
                 }
             }
+            
+            DispatchQueue.main.async {
+                self.posts = posts
+                isFetching = false
+            }
         }
+    }
 }
 
 struct ReusablePostView_Previews: PreviewProvider {

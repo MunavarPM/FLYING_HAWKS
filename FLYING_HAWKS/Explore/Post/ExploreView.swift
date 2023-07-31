@@ -8,6 +8,17 @@
 import SwiftUI
 
 struct ExploreView: View {
+    var gradientBackground: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color(hue: 213 / 360.0, saturation: 0.62, brightness: 0.45),
+                Color(hue: 203 / 360.0, saturation: 0.89, brightness: 0.71),
+                Color(white: 0.96)
+            ]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
     @State private var recentsPosts: [Post] = []
     @State private var createNewPost: Bool = false
     var body: some View {
@@ -23,7 +34,7 @@ struct ExploreView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(.black)
                             .padding(13)
-                            .background(Color("Color2"),in: Circle())
+                            .background(gradientBackground,in: Circle())
                     }
                     .padding(15)
                 }
@@ -41,7 +52,7 @@ struct ExploreView: View {
                 .toolbarColorScheme(.dark, for: .navigationBar)
                 .fullScreenCover(isPresented: $createNewPost) {
                     CreateNewPost { post in
-                        /// Adding to our recentpost
+                        /// Adding to our recentpost array
                         recentsPosts.insert(post, at: 0)
                         
                 }

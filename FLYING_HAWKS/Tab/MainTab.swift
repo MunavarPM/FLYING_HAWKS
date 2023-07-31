@@ -25,6 +25,7 @@ struct SwiftTabView: View {
                     Label("Settings",systemImage: "gear")
                 }
         }
+        .accentColor(Color("Color2"))
     }
 }
 

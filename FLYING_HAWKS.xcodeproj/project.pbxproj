@@ -204,7 +204,6 @@
 			children = (
 				DB74700D2A74010900EF00A1 /* Post */,
 				DB2F88942A71F76A0049F88D /* Camera */,
-				DB2F88972A71F7EA0049F88D /* ExploreViewModel.swift */,
 			);
 			path = Explore;
 			sourceTree = "<group>";
@@ -276,6 +275,7 @@
 				DB74700F2A74016D00EF00A1 /* CreateNewPost.swift */,
 				DB08536C2A769B27009C3064 /* ReusablePostView.swift */,
 				DB2F88952A71F7C20049F88D /* ExploreView.swift */,
+				DB2F88972A71F7EA0049F88D /* ExploreViewModel.swift */,
 			);
 			path = Post;
 			sourceTree = "<group>";
