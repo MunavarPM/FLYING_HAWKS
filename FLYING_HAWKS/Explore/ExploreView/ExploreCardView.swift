@@ -23,7 +23,8 @@ struct ExploreViewModel: View {
     var body: some View {
         VStack {
             HStack {
-                Image("Mentor")
+                
+                Image("_ (7)")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60,height: 40)
@@ -35,7 +36,7 @@ struct ExploreViewModel: View {
             }
             
 
-            .padding(.leading,30)
+            .padding(.leading,-10)
             
             if let postImageURL = post.imageURL {
                 GeometryReader {

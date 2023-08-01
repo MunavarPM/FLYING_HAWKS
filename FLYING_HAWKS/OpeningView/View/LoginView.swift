@@ -81,9 +81,7 @@ struct LoginPage : View {
                                 .background(Color("Color2"))
                                 .clipShape(Capsule())
                         }
-                        .overlay(content: {
-                            LoadingView(show: $isLoading)
-                        })
+                        
                         .alert(errorMessage, isPresented: $shwoError, actions: {})
                         .alert(isPresented: $isAlert) {
                             Alert(title: Text("Error"),
@@ -125,7 +123,9 @@ struct LoginPage : View {
             }
             .ignoresSafeArea(.all)
         }
-        
+        .overlay(content: {
+            LoadingView(show: $isLoading)
+        })
     }
     
     func login() {

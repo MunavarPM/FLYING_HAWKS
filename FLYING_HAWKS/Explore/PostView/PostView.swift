@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct ExploreView: View {
+    
     var gradientBackground: LinearGradient {
         LinearGradient(
-            gradient: Gradient(colors: [
-                Color(hue: 213 / 360.0, saturation: 0.62, brightness: 0.45),
-                Color(hue: 203 / 360.0, saturation: 0.89, brightness: 0.71),
-                Color(white: 0.96)
+            gradient: Gradient(stops: [
+                .init(color: Color(hue: 186 / 360.0, saturation: 1.0, brightness: 0.69), location: 0.21),
+                .init(color: Color(hue: 203 / 360.0, saturation: 0.89, brightness: 0.71), location: 1),
             ]),
             startPoint: .leading,
             endPoint: .trailing
@@ -46,17 +46,27 @@ struct ExploreView: View {
                             .resizable()
                             .frame(width: 125, height: 25)
                     }
+                    
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        NavigationLink {
+                            SearchView()
+                        } label: {
+                            Image(systemName: "magnifyingglass.circle.fill")
+                                .accentColor(Color("Color2"))
+                                .scaleEffect(0.9)
+                            
+                        }
+                    }
                 }
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbarBackground(Color("Color1"), for: .navigationBar)
-                .toolbarColorScheme(.dark, for: .navigationBar)
                 .fullScreenCover(isPresented: $createNewPost) {
                     CreateNewPost { post in
                         /// Adding to our recentpost array
                         recentsPosts.insert(post, at: 0)
                         
+                    }
                 }
-            }
         }
     }
 }
@@ -68,56 +78,6 @@ struct ExploreView_Previews: PreviewProvider {
     }
 }
 
-//struct explore: View {
-//
-//    var feedData = [
-//        feed(image: "_ (7)", name: "John"),
-//        feed(image: "Gavi", name: "Gavi")
-//    ]
-//
-//    @State private var createNewPost: Bool = false
-//
-//    var body: some View {
-//        NavigationStack {
-//            ScrollView(.vertical,showsIndicators: false) {
-//
-//                LazyVStack(spacing: 30) {
-//                    ForEach(0...10, id: \.self) { post in
-//                        ExploreViewModel()
-//                    }
-//                }
-//                .padding(.top,40)
-//            }
-//            .navigationTitle("Explore")
-//            .navigationBarTitleDisplayMode(.inline)
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarLeading) {
-//                    Image("logo")
-//                        .resizable()
-//                        .frame(width: 125, height: 25)
-//                }
-//            }
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button {
-//                        createNewPost.toggle()
-//                    } label: {
-//                        Image(systemName: "plus")
-//                    }
-//                }
-//            }
-//            .toolbarBackground(.visible, for: .navigationBar)
-//            .toolbarBackground(Color("Color1"), for: .navigationBar)
-//            .toolbarColorScheme(.dark, for: .navigationBar)
-//            .fullScreenCover(isPresented: $createNewPost) {
-//                CreateNewPost { _ in
-//
-//                }
-//            }
-//        }
-//    }
-//}
-// For feed pic's
 struct feed : Identifiable {
     let id = UUID()
     let image: String

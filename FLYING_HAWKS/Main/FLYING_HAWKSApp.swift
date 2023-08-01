@@ -16,7 +16,7 @@ struct Flying_HawksApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ExploreView()
                 .environmentObject(viewModel)
                 .preferredColorScheme(.dark)
             

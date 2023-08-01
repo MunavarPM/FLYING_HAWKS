@@ -147,20 +147,12 @@ struct CreateNewPost: View {
         
         print(userName+userUID)
         Task {
-            
             do {
-                
                 profileURL = URL(string: "\(userUID)")
-                
                 guard let profileURL = profileURL else {
-                    
-                    
                     print("before returning --- profile url")
                     return
-                    
                 }
-                
-                
                 /// Upload the image
                 let imageReferenceID = "\(userUID)\(Date())"
                 let strorageRef = Storage.storage().reference().child("Post_Images").child(imageReferenceID)
