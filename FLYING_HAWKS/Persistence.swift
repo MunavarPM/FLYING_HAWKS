@@ -10,6 +10,7 @@ import SwiftUI
 
 
 class DataController: ObservableObject {
+    static let shared = DataController()
     let container = NSPersistentContainer(name: "FLYING_HAWKS")
     init() {
         container.loadPersistentStores { description, error in

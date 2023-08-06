@@ -13,6 +13,7 @@ struct ContentView: View {
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     @State private var isFirstLaunch = true
+    @FetchRequest(sortDescriptors: []) var students: FetchedResults<Student>
     
     var body: some View {
         Group {
@@ -23,7 +24,11 @@ struct ContentView: View {
                         hasSeenOnboarding = true
                         }
                     } else if viewModel.UserSession != nil && isLoggedIn {
-                    playerDetails()
+                        if students.isEmpty {
+                            playerDetails()
+                        } else {
+                            SwiftTabView()
+                        }
             } else {
                 LoginPage()
             }
@@ -34,6 +39,8 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+          ContentView()
+            .preferredColorScheme(.dark)
+
     }
 }

@@ -25,6 +25,7 @@ struct User: Identifiable, Codable {
     }
 }
 
+
 extension User {
    
     static var Mark_User = User(id:"\(String(describing: UUID(uuidString: "uknown")))", fullname: "UNKONWN", email: "UNKNOWN", profileURL:URL(string: "invalid")!)

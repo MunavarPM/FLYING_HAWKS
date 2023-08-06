@@ -13,7 +13,7 @@ struct signupView: View {
             Viewsignup()
         }
         .preferredColorScheme(.dark)
-        .animation(.easeOut)
+        .animation(.easeInOut(duration: 2))
     }
 }
 
@@ -24,8 +24,6 @@ struct signupView_Previews: PreviewProvider {
 }
 
 struct Viewsignup : View {
-    
-   
     
     @State var fullname = ""
     @State var email = ""

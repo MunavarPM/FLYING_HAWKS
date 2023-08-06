@@ -19,7 +19,7 @@ struct LoginPage : View {
     @State private var shwoError: Bool = false
     @State var isLoading: Bool = false
     @EnvironmentObject var viewModel: AuthenticationModel
-
+    
     
     var body: some View {
         

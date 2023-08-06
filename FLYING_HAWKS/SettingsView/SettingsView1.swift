@@ -1,32 +1,20 @@
 //
-//  SettingsView.swift
-//  Flying Hawks
+//  View.swift
+//  FLYING_HAWKS
 //
-//  Created by MUNAVAR PM on 20/06/23.
+//  Created by MUNAVAR PM on 05/08/23.
 //
 
 import SwiftUI
-import Firebase
 
-
-struct SettingsView: View {
-//    @State private var errorMessage: String = ""
-//    @State private var shwoError: Bool = false
-    @State private var showAlertSignout = false
-    @State private var showAlertDelectAccount = false
-    @State var isLoading: Bool = false
-    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
-    @EnvironmentObject var viewModel: AuthenticationModel
-    @FetchRequest(sortDescriptors: []) var students: FetchedResults<Student>
-    @Environment(\.managedObjectContext) var viewContext
-    
-    
+struct SettingsView1: View {
+    @StateObject private var settingsViewModel = SettingsViewModel()
     var body: some View {
         ZStack {
             Color("Color")
                 .ignoresSafeArea(.all)
             List{
-                ForEach(students) { student in
+                ForEach(settingsViewModel.students) { student in
                     HStack(spacing: 20) {
                         
                         if let _studentImage = student.photo {
@@ -41,9 +29,9 @@ struct SettingsView: View {
                         }
                         
                         VStack(alignment: .leading) {
-                            Text(viewModel.CurrentUser?.fullname ?? User.Mark_User.fullname)
+                            Text(settingsViewModel.CurrentUser?.fullname ?? User.Mark_User.fullname)
                                 .font(.title3).bold()
-                            Text(viewModel.CurrentUser?.email ?? User.Mark_User.email)
+                            Text(settingsViewModel.CurrentUser?.email ?? User.Mark_User.email)
                                 .clipShape(Rectangle())
                                 .padding(1)
                                 .font(.footnote)
@@ -122,26 +110,10 @@ struct SettingsView: View {
             LoadingView(show: $isLoading)
         }
     }
-    
-    func performLogout() {
-        viewModel.signOut()
-        //        isLoading = false
-        isLoggedIn = false
-    }
-    
-    func performDelectAccount() {
-        viewModel.delectAccount()
-        isLoggedIn = false
-    }
-    
-
-    
-
 }
 
-struct SettingsView_Previews: PreviewProvider {
+struct SettingsView1_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
-            .preferredColorScheme(.dark)
+        SettingsView1()
     }
 }

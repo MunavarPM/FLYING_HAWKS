@@ -17,7 +17,8 @@ protocol AutheticationFromProtocol {
 class AuthenticationModel: ObservableObject { ///checker
     @Published var UserSession: FirebaseAuth.User? /// user is here or not checker with firebase object
     @Published var CurrentUser: User?
-    
+    @Published private var errorMessage: String = ""
+    @Published private var shwoError: Bool = false
     @AppStorage("user_profile_url") private var profileURL: URL?
     @AppStorage("user_name") private var userName: String = ""
     @AppStorage("user_UID")private var userUID: String = ""
@@ -68,6 +69,29 @@ class AuthenticationModel: ObservableObject { ///checker
         } catch {
             print("Enrror in the signour\(error.localizedDescription)")
         }
+    }
+    
+    func delectAccount() {
+        Task {
+            do {
+                guard let userUID = Auth.auth().currentUser?.uid else { return }
+                //            try await Auth.auth().currentUser?.delete()
+                /// Deleceting firestore user documents
+                try await Firestore.firestore().collection("user").document(userUID).delete()
+                /// Delecting the Auth account
+                try await Auth.auth().currentUser?.delete()
+            } catch {
+                print("Error in DeleteAccount\(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func setError(_ error: Error) async {
+        await MainActor.run(body: {
+            errorMessage = error.localizedDescription
+            shwoError.toggle()
+        })
+        
     }
     
     func fetchUser() async {  /// Help to get the current user id
